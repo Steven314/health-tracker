@@ -1,16 +1,17 @@
 from shiny import ui, render, module, reactive
 import datetime
 from faicons import icon_svg
+from db import DailyRecord
 
 @module.ui
 def data_input_ui():
     submit_button = ui.div(
         ui.input_action_button(
-            "submit", 
+            "submit",
             "Submit",
             icon = icon_svg("check"),
             class_ = "btn-primary"
-        ).add_style("margin: 10px;") 
+        ).add_style("margin: 10px;")
     ).add_style("display: flex; align-items: center; justify-content: center;")
 
     input_accord = ui.accordion(
@@ -18,13 +19,13 @@ def data_input_ui():
             "Date",
             ui.div(
                 ui.input_date(
-                    "date", 
-                    "Date", 
-                    value = datetime.date.today(), 
+                    "date",
+                    "Date",
+                    value = datetime.date.today(),
                     format = "DD, MM d, yyyy"
                 ),
                 ui.input_action_button(
-                    "today", 
+                    "today",
                     "Today",
                     icon = icon_svg("calendar"),
                     class_ = "btn-primary"
@@ -113,9 +114,27 @@ def data_input_ui():
 @module.server
 def data_input_server(input, output, session):
     @reactive.effect
+    @reactive.event(input.today)
     def _():
-        if input.today(): 
-            ui.update_date(
-                "date", 
-                value = datetime.date.today()
-            )
+        ui.update_date(
+            "date",
+            value = datetime.date.today()
+        )
+
+    @reactive.effect
+    @reactive.event(input.submit)
+    def _():
+        # when the submit button is pressed, gather all the data inputs
+        stats_today = DailyRecord(
+            date           = input.date(),
+            caffeine       = input.caffeine(),
+            weight         = input.weight(),
+            stress         = input.stress(),
+            sleep_rhr      = input.sleep_rhr(),
+            sleep_duration = input.sleep_duration(),
+            sleep_battery  = input.sleep_battery(),
+            running        = input.running(),
+            weight_lifting = input.weight_lifting()
+        )
+
+        print(stats_today)
