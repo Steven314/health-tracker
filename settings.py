@@ -16,13 +16,15 @@ def settings_ui():
                 Clearing the database will clear all the saved data.
                 """
             ),
-            ui.input_action_button(
-                "clear_db", 
-                "Clear Database", 
-                icon = icon_svg("trash"), 
-                class_ = "btn-outline-danger",
-                width = "75%"
-            ),
+            ui.div(
+                ui.input_action_button(
+                    "clear_db",
+                    "Clear Database",
+                    icon = icon_svg("trash"),
+                    class_ = "btn-outline-danger",
+                    width = "75%"
+                )
+            ).add_style("display: flex; align-items: center; justify-content: center;"),
             class_ = "border-warning"
         )
     )
